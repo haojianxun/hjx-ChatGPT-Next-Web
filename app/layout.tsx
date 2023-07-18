@@ -42,7 +42,7 @@ export default function RootLayout({
         {/* 
           // @ts-ignore */}
         <ins
-          class="adsbygoogle"
+          className="adsbygoogle"
           style={{ display: "block" }}
           data-ad-client="ca-pub-2935642389749184"
           data-ad-slot="7953564210"
