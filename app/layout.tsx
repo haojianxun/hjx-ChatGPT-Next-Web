@@ -50,22 +50,6 @@ export default function RootLayout({
           data-full-width-responsive="true"
         ></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        {/* 多重 */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2935642389749184"
-          crossOrigin="anonymous"
-        ></script>
-        {/* 
-          // @ts-ignore */}
-        <ins
-          class="adsbygoogle"
-          style={{ display: "block" }}
-          data-ad-format="autorelaxed"
-          data-ad-client="ca-pub-2935642389749184"
-          data-ad-slot="8422082476"
-        ></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
       </head>
       <body>{children}</body>
     </html>
