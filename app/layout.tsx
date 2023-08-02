@@ -34,17 +34,15 @@ export default function RootLayout({
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
-        <script
+{/*         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-26JC1P6T0V"
         ></script>
         <script>
           window.dataLayer = window.dataLayer || [];
-          {/* 
-            // @ts-ignore */}
           function gtag(){dataLayer.push(arguments)}
           gtag("js", new Date()); gtag("config", "G-26JC1P6T0V");
-        </script>
+        </script> */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2935642389749184"
