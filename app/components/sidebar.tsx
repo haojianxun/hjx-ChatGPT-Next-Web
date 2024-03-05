@@ -158,7 +158,7 @@ export function SideBar(props: { className?: string }) {
           NextChat
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          ChatGPT can make mistakes. Consider checking important information.
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
