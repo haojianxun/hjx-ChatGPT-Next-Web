@@ -1,4 +1,4 @@
-export const OWNER = "Yidadaa";
+export const OWNER = "A-Cepheus";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
@@ -115,6 +115,7 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
   "gemini-pro": "2023-12",
+  "yi-34b": "2023-06",
 };
 
 export const DEFAULT_MODELS = [
