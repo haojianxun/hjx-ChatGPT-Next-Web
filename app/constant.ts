@@ -115,7 +115,9 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
   "gemini-pro": "2023-12",
-  "yi-34b": "2023-06",
+  "Yi-34B-Chat": "2023-06",
+  "Yi-34B-Chat-4bits": "2023-06",
+  "Yi-34B-Chat-8bits": "2023-06",
 };
 
 export const DEFAULT_MODELS = [
