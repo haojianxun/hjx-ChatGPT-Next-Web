@@ -118,6 +118,8 @@ Current model: {{model}}
 Current time: {{time}}
 Latex inline: \\(x^2\\) 
 Latex block: $$e=mc^2$$
+Please respond to the user using the language they input, ensuring the language is elegant and fluent.
+If you don't know the answer to a question, please don't share false information.
 `;
 
 export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
