@@ -112,7 +112,7 @@ export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lan
 // Latex block: $$e=mc^2$$
 // `;
 export const DEFAULT_SYSTEM_TEMPLATE = `
-You are ChatGPT, a large language model trained by {{ServiceProvider}}.
+You are {{model}}, a large language model trained by {{ServiceProvider}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
@@ -135,6 +135,7 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
   "gemini-pro": "2023-12",
   "gemini-pro-vision": "2023-12",
+  "Meta-Llama-3-8B-Instruct": "2023-12",
 };
 
 const openaiModels = [
@@ -174,6 +175,10 @@ const anthropicModels = [
   "claude-3-haiku-20240307",
 ];
 
+const metaModels = [
+  "Meta-Llama-3-8B-Instruct",
+];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -200,6 +205,15 @@ export const DEFAULT_MODELS = [
       id: "anthropic",
       providerName: "Anthropic",
       providerType: "anthropic",
+    },
+  })),
+  ...metaModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "meta",
+      providerName: "Meta",
+      providerType: "meta",
     },
   })),
 ] as const;
