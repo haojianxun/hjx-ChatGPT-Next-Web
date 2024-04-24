@@ -13,6 +13,7 @@ import {
   StoreKey,
   SUMMARIZE_MODEL,
   GEMINI_SUMMARIZE_MODEL,
+  ModelNameToName,
 } from "../constant";
 import { ClientApi, RequestMessage, MultimodalContent } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
@@ -105,6 +106,8 @@ function countMessages(msgs: ChatMessage[]) {
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   const cutoff =
     KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
+  const modelname =
+    ModelNameToName[modelConfig.model] ?? ModelNameToName.default;
   // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
   const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
 
@@ -118,6 +121,7 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 
   const vars = {
     ServiceProvider: serviceProvider,
+    modelname,
     cutoff,
     model: modelConfig.model,
     time: new Date().toString(),

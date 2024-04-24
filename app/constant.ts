@@ -112,7 +112,7 @@ export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lan
 // Latex block: $$e=mc^2$$
 // `;
 export const DEFAULT_SYSTEM_TEMPLATE = `
-You are {{model}}, a large language model trained by {{ServiceProvider}}.
+You are {{modelname}}, a large language model trained by {{ServiceProvider}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
@@ -136,6 +136,13 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gemini-pro": "2023-12",
   "gemini-pro-vision": "2023-12",
   "Meta-Llama-3-8B-Instruct": "2023-12",
+};
+
+export const ModelNameToName: Record<string, string> = {
+  default: "ChatGPT",
+  "gemini-pro": "Gemini",
+  "gemini-pro-vision": "Gemini",
+  "Meta-Llama-3-8B-Instruct": "Llama",
 };
 
 const openaiModels = [
