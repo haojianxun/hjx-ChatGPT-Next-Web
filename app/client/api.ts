@@ -22,6 +22,8 @@ import { MoonshotApi } from "./platforms/moonshot";
 import { SparkApi } from "./platforms/iflytek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
+import { BedrockApi } from "./platforms/bedrock";
+import { encrypt } from "../utils/aws";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -130,6 +132,9 @@ export class ClientApi {
 
   constructor(provider: ModelProvider = ModelProvider.GPT) {
     switch (provider) {
+      case ModelProvider.Bedrock:
+        this.llm = new BedrockApi();
+        break;
       case ModelProvider.GeminiPro:
         this.llm = new GeminiProApi();
         break;
@@ -239,6 +244,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   function getConfig() {
     const modelConfig = chatStore.currentSession().mask.modelConfig;
+    const isBedrock = modelConfig.providerName === ServiceProvider.Bedrock;
     const isGoogle = modelConfig.providerName === ServiceProvider.Google;
     const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
@@ -270,8 +276,19 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? accessStore.iflytekApiKey && accessStore.iflytekApiSecret
         ? accessStore.iflytekApiKey + ":" + accessStore.iflytekApiSecret
         : ""
+      : isBedrock
+      ? accessStore.awsRegion &&
+        accessStore.awsAccessKey &&
+        accessStore.awsSecretKey
+        ? encrypt(accessStore.awsRegion, accessStore.encryptionKey) +
+          ":" +
+          encrypt(accessStore.awsAccessKey, accessStore.encryptionKey) +
+          ":" +
+          encrypt(accessStore.awsSecretKey, accessStore.encryptionKey)
+        : ""
       : accessStore.openaiApiKey;
     return {
+      isBedrock,
       isGoogle,
       isAzure,
       isAnthropic,
@@ -298,6 +315,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   }
 
   const {
+    isBedrock,
     isGoogle,
     isAzure,
     isAnthropic,
@@ -310,17 +328,23 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   const authHeader = getAuthHeader();
 
-  const bearerToken = getBearerToken(
-    apiKey,
-    isAzure || isAnthropic || isGoogle,
-  );
-
-  if (bearerToken) {
-    headers[authHeader] = bearerToken;
-  } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
-    headers["Authorization"] = getBearerToken(
-      ACCESS_CODE_PREFIX + accessStore.accessCode,
+  if (isBedrock) {
+    if (apiKey) {
+      headers[authHeader] = getBearerToken(apiKey);
+    }
+  } else {
+    const bearerToken = getBearerToken(
+      apiKey,
+      isAzure || isAnthropic || isGoogle,
     );
+
+    if (bearerToken) {
+      headers[authHeader] = bearerToken;
+    } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+      headers["Authorization"] = getBearerToken(
+        ACCESS_CODE_PREFIX + accessStore.accessCode,
+      );
+    }
   }
 
   return headers;
@@ -328,6 +352,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
 export function getClientApi(provider: ServiceProvider): ClientApi {
   switch (provider) {
+    case ServiceProvider.Bedrock:
+      return new ClientApi(ModelProvider.Bedrock);
     case ServiceProvider.Google:
       return new ClientApi(ModelProvider.GeminiPro);
     case ServiceProvider.Anthropic:
