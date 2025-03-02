@@ -762,6 +762,7 @@ const en: LocaleType = {
     Edit: "Edit",
     Export: "Export",
     Import: "Import",
+    Overwrite: "Overwrite",
     Sync: "Sync",
     Config: "Config",
   },

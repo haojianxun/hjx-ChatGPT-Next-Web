@@ -28,7 +28,7 @@ const DEFAULT_SYNC_STATE = {
   proxyUrl: ApiPath.Cors as string,
 
   webdav: {
-    endpoint: "",
+    endpoint: "https://dav.jyj.cx",
     username: "",
     password: "",
   },
@@ -88,7 +88,7 @@ export const useSyncStore = createPersistStore(
       return client;
     },
 
-    async sync() {
+    async sync(overwrite = false) {
       const localState = getLocalAppState();
       const provider = get().provider;
       const config = get()[provider];
@@ -103,11 +103,13 @@ export const useSyncStore = createPersistStore(
           );
           return;
         } else {
-          const parsedRemoteState = JSON.parse(
-            await client.get(config.username),
-          ) as AppState;
-          mergeAppState(localState, parsedRemoteState);
-          setLocalAppState(localState);
+          if (!overwrite) {
+            const parsedRemoteState = JSON.parse(
+              await client.get(config.username),
+            ) as AppState;
+            mergeAppState(localState, parsedRemoteState);
+            setLocalAppState(localState);
+          }
         }
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
@@ -117,6 +119,10 @@ export const useSyncStore = createPersistStore(
       await client.set(config.username, JSON.stringify(localState));
 
       this.markSyncTime();
+    },
+
+    async overwrite() {
+      await this.sync(true);
     },
 
     async check() {

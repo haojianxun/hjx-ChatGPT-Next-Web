@@ -757,6 +757,7 @@ const cn = {
     Export: "导出",
     Import: "导入",
     Sync: "同步",
+    Overwrite: "覆盖",
     Config: "配置",
   },
   Exporter: {

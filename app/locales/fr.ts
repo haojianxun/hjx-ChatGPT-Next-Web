@@ -589,6 +589,7 @@ const fr: PartialLocaleType = {
     Edit: "Modifier",
     Export: "Exporter",
     Import: "Importer",
+    Overwrite: "Remplacer",
     Sync: "Synchroniser",
     Config: "Configurer",
   },

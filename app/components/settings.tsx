@@ -530,6 +530,21 @@ function SyncItems() {
             />
             {couldSync && (
               <IconButton
+                icon={<UploadIcon />}
+                text={Locale.UI.Overwrite}
+                onClick={async () => {
+                  try {
+                    await syncStore.overwrite();
+                    showToast(Locale.Settings.Sync.Success);
+                  } catch (e) {
+                    showToast(Locale.Settings.Sync.Fail);
+                    console.error("[Sync]", e);
+                  }
+                }}
+              />
+            )}
+            {couldSync && (
+              <IconButton
                 icon={<ResetIcon />}
                 text={Locale.UI.Sync}
                 onClick={async () => {

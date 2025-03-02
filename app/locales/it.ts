@@ -590,6 +590,7 @@ const it: PartialLocaleType = {
     Edit: "Modifica",
     Export: "Esporta",
     Import: "Importa",
+    Overwrite: "Sostituisci",
     Sync: "Sincronizza",
     Config: "Configura",
   },

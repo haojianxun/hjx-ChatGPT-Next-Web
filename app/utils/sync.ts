@@ -1,11 +1,11 @@
 import {
   ChatSession,
-  useAccessStore,
-  useAppConfig,
+  // useAccessStore,
+  // useAppConfig,
   useChatStore,
 } from "../store";
-import { useMaskStore } from "../store/mask";
-import { usePromptStore } from "../store/prompt";
+// import { useMaskStore } from "../store/mask";
+// import { usePromptStore } from "../store/prompt";
 import { StoreKey } from "../constant";
 import { merge } from "./merge";
 
@@ -32,18 +32,18 @@ export type GetStoreState<T> = T extends { getState: () => infer U }
 
 const LocalStateSetters = {
   [StoreKey.Chat]: useChatStore.setState,
-  [StoreKey.Access]: useAccessStore.setState,
-  [StoreKey.Config]: useAppConfig.setState,
-  [StoreKey.Mask]: useMaskStore.setState,
-  [StoreKey.Prompt]: usePromptStore.setState,
+  // [StoreKey.Access]: useAccessStore.setState,
+  // [StoreKey.Config]: useAppConfig.setState,
+  // [StoreKey.Mask]: useMaskStore.setState,
+  // [StoreKey.Prompt]: usePromptStore.setState,
 } as const;
 
 const LocalStateGetters = {
   [StoreKey.Chat]: () => getNonFunctionFileds(useChatStore.getState()),
-  [StoreKey.Access]: () => getNonFunctionFileds(useAccessStore.getState()),
-  [StoreKey.Config]: () => getNonFunctionFileds(useAppConfig.getState()),
-  [StoreKey.Mask]: () => getNonFunctionFileds(useMaskStore.getState()),
-  [StoreKey.Prompt]: () => getNonFunctionFileds(usePromptStore.getState()),
+  // [StoreKey.Access]: () => getNonFunctionFileds(useAccessStore.getState()),
+  // [StoreKey.Config]: () => getNonFunctionFileds(useAppConfig.getState()),
+  // [StoreKey.Mask]: () => getNonFunctionFileds(useMaskStore.getState()),
+  // [StoreKey.Prompt]: () => getNonFunctionFileds(usePromptStore.getState()),
 } as const;
 
 export type AppState = {
@@ -100,22 +100,22 @@ const MergeStates: StateMerger = {
 
     return localState;
   },
-  [StoreKey.Prompt]: (localState, remoteState) => {
-    localState.prompts = {
-      ...remoteState.prompts,
-      ...localState.prompts,
-    };
-    return localState;
-  },
-  [StoreKey.Mask]: (localState, remoteState) => {
-    localState.masks = {
-      ...remoteState.masks,
-      ...localState.masks,
-    };
-    return localState;
-  },
-  [StoreKey.Config]: mergeWithUpdate<AppState[StoreKey.Config]>,
-  [StoreKey.Access]: mergeWithUpdate<AppState[StoreKey.Access]>,
+  // [StoreKey.Prompt]: (localState, remoteState) => {
+  //   localState.prompts = {
+  //     ...remoteState.prompts,
+  //     ...localState.prompts,
+  //   };
+  //   return localState;
+  // },
+  // [StoreKey.Mask]: (localState, remoteState) => {
+  //   localState.masks = {
+  //     ...remoteState.masks,
+  //     ...localState.masks,
+  //   };
+  //   return localState;
+  // },
+  // [StoreKey.Config]: mergeWithUpdate<AppState[StoreKey.Config]>,
+  // [StoreKey.Access]: mergeWithUpdate<AppState[StoreKey.Access]>,
 };
 
 export function getLocalAppState() {
