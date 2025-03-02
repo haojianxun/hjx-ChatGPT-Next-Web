@@ -107,6 +107,7 @@ import {
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
+import { useSyncStore } from "../store/sync";
 import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
@@ -948,6 +949,8 @@ function _Chat() {
   const fontSize = config.fontSize;
   const fontFamily = config.fontFamily;
 
+  const syncStore = useSyncStore();
+
   const [showExport, setShowExport] = useState(false);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -1395,44 +1398,26 @@ function _Chat() {
     submit: (text) => {
       doSubmit(text);
     },
-    code: (text) => {
-      if (accessStore.disableFastLink) return;
-      console.log("[Command] got code from url: ", text);
-      showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
-        if (res) {
-          accessStore.update((access) => (access.accessCode = text));
-        }
-      });
-    },
+    // code: (text) => {
+    //   if (accessStore.disableFastLink) return;
+    //   console.log("[Command] got code from url: ", text);
+    //   showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
+    //     if (res) {
+    //       accessStore.update((access) => (access.accessCode = text));
+    //     }
+    //   });
+    // },
     settings: (text) => {
       if (accessStore.disableFastLink) return;
 
       try {
         const payload = JSON.parse(text) as {
-          key?: string;
-          url?: string;
           code?: string;
+          username?: string;
+          password?: string;
         };
 
         console.log("[Command] got settings from url: ", payload);
-
-        if (payload.key || payload.url) {
-          showConfirm(
-            Locale.URLCommand.Settings +
-              `\n${JSON.stringify(payload, null, 4)}`,
-          ).then((res) => {
-            if (!res) return;
-            if (payload.key) {
-              accessStore.update(
-                (access) => (access.openaiApiKey = payload.key!),
-              );
-            }
-            if (payload.url) {
-              accessStore.update((access) => (access.openaiUrl = payload.url!));
-            }
-            accessStore.update((access) => (access.useCustomConfig = true));
-          });
-        }
 
         if (payload.code) {
           accessStore.update((access) => (access.accessCode = payload.code!));
@@ -1442,6 +1427,22 @@ function _Chat() {
             context.push(copiedHello);
             setUserInput(" ");
           }
+        }
+
+        if (payload.username) {
+          syncStore.update(
+            (config) => (config.webdav.username = payload.username!),
+          );
+        }
+
+        if (payload.password) {
+          syncStore.update(
+            (config) => (config.webdav.password = payload.password!),
+          );
+        }
+
+        if (payload.username && payload.password) {
+          syncStore.sync();
         }
       } catch {
         console.error("[Command] failed to get settings from url: ", text);

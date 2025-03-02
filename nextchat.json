@@ -1,0 +1,16 @@
+{
+    "name": "nextchat",
+    "cwd": "/www/nextchat",
+    "script": "server.js",
+    "env": {
+        "PORT": 8032,
+        "CODE": "scut",
+        "BASE_URL": "https://oneapi.jyj.cx",
+        "OPENAI_API_KEY": "sk-jiangyj",
+        "HIDE_USER_API_KEY": true,
+        "CUSTOM_MODELS": "-all,gemini-2.0-pro-exp-02-05@openai,gemini-2.0-flash-thinking-exp-01-21@openai,gemini-2.0-flash-exp@openai,gemini-2.0-flash@openai,gemini-2.0-flash-lite@openai,gpt-4o-2024-11-20@openai,o3-mini@openai,deepseek-ai/deepseek-v3@openai,deepseek-ai/deepseek-r1@openai,deepseek-chat@openai,deepseek-reasoner@openai,ep-20250124104315-zsg4p@openai",
+        "DEFAULT_MODEL": "gemini-2.0-pro-exp-02-05@openai",
+        "WHITE_WEBDAV_ENDPOINTS": "https://dav.jyj.cx",
+        "VISION_MODELS": "gemini-2.0-flash-thinking-exp-01-21@openai,gemini-2.0-pro-exp-02-05@openai,gemini-2.0-flash-exp@openai,gemini-2.0-flash@openai,gemini-2.0-flash-lite@openai,gpt-4o-2024-11-20@openai,o3-mini@openai,deepseek-ai/DeepSeek-V3@openai,deepseek-ai/DeepSeek-R1@openai,deepseek-chat@openai,deepseek-reasoner@openai,ep-20250124104315-zsg4p@openai"
+    }
+}
