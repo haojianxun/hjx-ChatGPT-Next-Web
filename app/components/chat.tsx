@@ -1167,6 +1167,7 @@ function _Chat() {
 
   const onDelete = (msgId: string) => {
     deleteMessage(msgId);
+    syncStore.upload();
   };
 
   const onResend = (message: ChatMessage) => {

@@ -29,6 +29,7 @@ import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { useAccessStore } from "./access";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { createEmptyMask, Mask } from "./mask";
+import { useSyncStore } from "./sync";
 
 const localStorage = safeLocalStorage();
 
@@ -226,6 +227,8 @@ export const useChatStore = createPersistStore(
           currentSessionIndex: 0,
           sessions: [newSession, ...state.sessions],
         }));
+
+        useSyncStore.getState().upload();
       },
 
       clearSessions() {
@@ -233,6 +236,8 @@ export const useChatStore = createPersistStore(
           sessions: [createEmptySession()],
           currentSessionIndex: 0,
         }));
+
+        useSyncStore.getState().upload();
       },
 
       selectSession(index: number) {
@@ -264,6 +269,8 @@ export const useChatStore = createPersistStore(
             sessions: newSessions,
           };
         });
+
+        useSyncStore.getState().upload();
       },
 
       newSession(mask?: Mask) {
@@ -326,6 +333,8 @@ export const useChatStore = createPersistStore(
           currentSessionIndex: nextIndex,
           sessions,
         }));
+
+        useSyncStore.getState().upload();
 
         showToast(
           Locale.Home.DeleteToast,
@@ -433,6 +442,8 @@ export const useChatStore = createPersistStore(
               get().onNewMessage(botMessage, session);
             }
             ChatControllerPool.remove(session.id, botMessage.id);
+
+            useSyncStore.getState().upload();
           },
           onBeforeTool(tool: ChatMessageTool) {
             (botMessage.tools = botMessage?.tools || []).push(tool);
@@ -727,8 +738,10 @@ export const useChatStore = createPersistStore(
                 console.log("[Memory] ", message);
                 get().updateTargetSession(session, (session) => {
                   session.lastSummarizeIndex = lastSummarizeIndex;
-                  session.memoryPrompt = message; // Update the memory prompt for stored it in local storage
+                  session.memoryPrompt = message;
                 });
+
+                useSyncStore.getState().upload();
               }
             },
             onError(err) {

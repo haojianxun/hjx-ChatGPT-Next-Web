@@ -534,7 +534,22 @@ function SyncItems() {
                 text={Locale.UI.Overwrite}
                 onClick={async () => {
                   try {
-                    await syncStore.overwrite();
+                    await syncStore.upload();
+                    showToast(Locale.Settings.Sync.Success);
+                  } catch (e) {
+                    showToast(Locale.Settings.Sync.Fail);
+                    console.error("[Sync]", e);
+                  }
+                }}
+              />
+            )}
+            {couldSync && (
+              <IconButton
+                icon={<DownloadIcon />}
+                text={Locale.UI.Overwrite}
+                onClick={async () => {
+                  try {
+                    await syncStore.download();
                     showToast(Locale.Settings.Sync.Success);
                   } catch (e) {
                     showToast(Locale.Settings.Sync.Fail);
@@ -1408,7 +1423,10 @@ export function Settings() {
             <IconButton
               aria={Locale.UI.Close}
               icon={<CloseIcon />}
-              onClick={() => navigate(Path.Home)}
+              onClick={() => {
+                navigate(Path.Home);
+                useSyncStore.getState().sync();
+              }}
               bordered
             />
           </div>

@@ -28,6 +28,7 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
+import { useSyncStore } from "../store/sync";
 import clsx from "clsx";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -238,6 +239,8 @@ export function Home() {
   if (!useHasHydrated()) {
     return <Loading />;
   }
+
+  useSyncStore.getState().download();
 
   return (
     <ErrorBoundary>

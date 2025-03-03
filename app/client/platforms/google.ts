@@ -83,7 +83,12 @@ export class GeminiProApi implements LLMApi {
     }
     const messages = _messages.map((v) => {
       let parts: any[] = [{ text: getMessageTextContent(v) }];
-      if (isVisionModel(options.config.model, accessStore.visionModels)) {
+      if (
+        isVisionModel(
+          options.config.model,
+          useAccessStore.getState().visionModels,
+        )
+      ) {
         const images = getMessageImages(v);
         if (images.length > 0) {
           multimodal = true;

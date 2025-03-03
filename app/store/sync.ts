@@ -22,6 +22,12 @@ export interface WebDavConfig {
 const isApp = !!getClientConfig()?.isApp;
 export type SyncStore = GetStoreState<typeof useSyncStore>;
 
+export enum SyncAction {
+  SYNC = "SYNC",
+  UPLOAD = "UPLOAD",
+  DOWNLOAD = "DOWNLOAD",
+}
+
 const DEFAULT_SYNC_STATE = {
   provider: ProviderType.WebDAV,
   useProxy: true,
@@ -88,41 +94,75 @@ export const useSyncStore = createPersistStore(
       return client;
     },
 
-    async sync(overwrite = false) {
+    async sync(action: SyncAction = SyncAction.SYNC) {
+      if (!(await this.hasAccount())) {
+        console.log("[Sync] No account found, skipping sync.");
+        return;
+      }
+
       const localState = getLocalAppState();
       const provider = get().provider;
       const config = get()[provider];
       const client = this.getClient();
 
-      try {
-        const remoteState = await client.get(config.username);
-        if (!remoteState || remoteState === "") {
-          await client.set(config.username, JSON.stringify(localState));
-          console.log(
-            "[Sync] Remote state is empty, using local state instead.",
-          );
-          return;
-        } else {
-          if (!overwrite) {
+      if (action === SyncAction.SYNC) {
+        console.log("[Sync] Syncing state", config.username);
+        try {
+          const remoteState = await client.get(config.username);
+          if (!remoteState || remoteState === "") {
+            await client.set(config.username, JSON.stringify(localState));
+            console.log(
+              "[Sync] Remote state is empty, using local state instead.",
+            );
+            return;
+          } else {
             const parsedRemoteState = JSON.parse(
               await client.get(config.username),
             ) as AppState;
             mergeAppState(localState, parsedRemoteState);
             setLocalAppState(localState);
           }
+        } catch (e) {
+          console.log("[Sync] failed to get remote state", e);
+          throw e;
         }
-      } catch (e) {
-        console.log("[Sync] failed to get remote state", e);
-        throw e;
+        await client.set(config.username, JSON.stringify(localState));
+      } else if (action === SyncAction.UPLOAD) {
+        console.log("[Sync] Uploading state", localState);
+        await client.set(config.username, JSON.stringify(localState));
+      } else if (action === SyncAction.DOWNLOAD) {
+        console.log("[Sync] Downloading state", config.username);
+        const remoteState = await client.get(config.username);
+        if (!remoteState || remoteState === "") {
+          console.log(
+            "[Sync] Remote state is empty, using local state instead.",
+          );
+          return;
+        } else {
+          const parsedRemoteState = JSON.parse(remoteState) as AppState;
+          setLocalAppState(parsedRemoteState);
+        }
       }
-
-      await client.set(config.username, JSON.stringify(localState));
 
       this.markSyncTime();
     },
 
-    async overwrite() {
-      await this.sync(true);
+    async download() {
+      await this.sync(SyncAction.DOWNLOAD);
+    },
+
+    async upload() {
+      await this.sync(SyncAction.UPLOAD);
+    },
+
+    async hasAccount() {
+      const provider = get().provider;
+      const config = get()[provider] as any;
+      console.log("[Sync] hasAccount", provider, config);
+      // console.log("[Sync] hasAccount", !!(provider === ProviderType.WebDAV ? config.username && config.password : config.username && config.apiKey));
+      return provider === ProviderType.WebDAV
+        ? config.username && config.password
+        : config.username && config.apiKey;
     },
 
     async check() {
