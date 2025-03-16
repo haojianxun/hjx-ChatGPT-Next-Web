@@ -2,6 +2,65 @@ import { BuiltinMask } from "./typing";
 
 export const CN_MASKS: BuiltinMask[] = [
   {
+    avatar: "1f468-200d-1f4bb",
+    name: "代码解释",
+    context: [
+        {
+            id: "xEmmKgTS6NdMc7Bjjdi82",
+            date: "",
+            role: "user",
+            content: "你将作为一名开发工程师帮我完成代码解释工作",
+        }
+    ],
+    modelConfig: {
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+        max_tokens: 4000,
+        presence_penalty: 0,
+        frequency_penalty: 0,
+        sendMemory: true,
+        historyMessageCount: 4,
+        compressMessageLengthThreshold: 1000,
+        template: "解释这段代码{{input}}",
+    },
+    lang: "cn",
+    builtin: true,
+    createdAt: 1742119246449,
+  },
+  {
+    avatar: "1f1e8-1f1f3",
+    name: "翻译官",
+    context: [
+       {
+            id: "-3TXDkhfTIGCjJpGavBw_",
+            date: "",
+            role: "assistant",
+            content: "输入格式为第一行要翻译的语言，第二行为内容。也可以在面具设置里预输入文字的“文字翻译为”后面预先加入要翻译的语言，后续可以直接输入内容翻译不需要在第一行设置语言"
+        },
+        {
+            id: "-3TXDkhfTIGCjJpGavBw_",
+            date: "",
+            role: "user",
+            content: "你将作为一名合格的翻译官将我的文字翻译成各种语言",
+        }
+    ],
+    modelConfig: {
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+        max_tokens: 4000,
+        presence_penalty: 0,
+        frequency_penalty: 0,
+        sendMemory: true,
+        historyMessageCount: 4,
+        compressMessageLengthThreshold: 1000,
+        template: "结果返回代码格式，将后面的文字翻译为{{input}}",
+    },
+    lang: "cn",
+    builtin: true,
+    createdAt: 1742114808271,
+    hideContext: false,
+  },
+  {
     avatar: "1f5bc-fe0f",
     name: "AI文生图",
     context: [

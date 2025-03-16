@@ -8,14 +8,8 @@ const it: PartialLocaleType = {
   WIP: "Work in progress...",
   Error: {
     Unauthorized: isApp
-      ? `😆 La conversazione ha incontrato alcuni problemi, non preoccuparti:
-    \\ 1️⃣ Se vuoi iniziare senza configurazione, [clicca qui per iniziare a chattare immediatamente 🚀](${SAAS_CHAT_UTM_URL})
-    \\ 2️⃣ Se vuoi utilizzare le tue risorse OpenAI, clicca [qui](/#/settings) per modificare le impostazioni ⚙️`
-      : `😆 La conversazione ha incontrato alcuni problemi, non preoccuparti:
-    \ 1️⃣ Se vuoi iniziare senza configurazione, [clicca qui per iniziare a chattare immediatamente 🚀](${SAAS_CHAT_UTM_URL})
-    \ 2️⃣ Se stai utilizzando una versione di distribuzione privata, clicca [qui](/#/auth) per inserire la chiave di accesso 🔑
-    \ 3️⃣ Se vuoi utilizzare le tue risorse OpenAI, clicca [qui](/#/settings) per modificare le impostazioni ⚙️
- `,
+      ? `Stai utilizzando la versione di distribuzione pubblica, fai clic [qui](/#/auth) per inserire la password di accesso o la tua chiave 🔑.`
+      : `Stai utilizzando la versione di distribuzione pubblica, fai clic [qui](/#/auth) per inserire la password di accesso o la tua chiave 🔑.`,
   },
   Auth: {
     Title: "Password richiesta",
@@ -25,10 +19,6 @@ const it: PartialLocaleType = {
     Confirm: "Conferma",
     Later: "Più tardi",
     Return: "Ritorna",
-    SaasTips:
-      "La configurazione è troppo complicata, voglio usarlo immediatamente",
-    TopTips:
-      "🥳 Offerta di lancio NextChat AI, sblocca OpenAI o1, GPT-4o, Claude-3.5 e i più recenti modelli di grandi dimensioni",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} conversazioni`,

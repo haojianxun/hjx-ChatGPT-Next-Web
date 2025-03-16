@@ -2,6 +2,65 @@ import { BuiltinMask } from "./typing";
 
 export const EN_MASKS: BuiltinMask[] = [
   {
+    avatar: "1f468-200d-1f4bb",
+    name: "Code Explanation",
+    context: [
+        {
+            id: "xEmmKgTS6NdMc7Bjjdi82",
+            date: "",
+            role: "user",
+            content: "You will act as a development engineer to help me complete the code explanation work.",
+        }
+    ],
+    modelConfig: {
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+        max_tokens: 4000,
+        presence_penalty: 0,
+        frequency_penalty: 0,
+        sendMemory: true,
+        historyMessageCount: 4,
+        compressMessageLengthThreshold: 1000,
+        template: "Explain this piece of code.{{input}}",
+    },
+    lang: "en",
+    builtin: true,
+    createdAt: 1742119246449,
+},
+{
+    avatar: "1f1e8-1f1f3",
+    name: "Translator",
+    context: [
+      {
+        id: "-3TXDkhfTIGCjJpGavBw_",
+        date: "",
+        role: "assistant",
+        content: "You can also pre-enter the text 'Translate to' in the mask settings, followed by the language you want to translate to. Afterwards, you can directly input content for translation without needing to set the language in the first line."
+    },
+        {
+            id: "-3TXDkhfTIGCjJpGavBw_",
+            date: "",
+            role: "user",
+            content: "You will act as a qualified translator to translate my text into various languages.",
+        }
+    ],
+    modelConfig: {
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+        max_tokens: 4000,
+        presence_penalty: 0,
+        frequency_penalty: 0,
+        sendMemory: true,
+        historyMessageCount: 4,
+        compressMessageLengthThreshold: 1000,
+        template: "Return the result in code format, translating the following text to{{input}}",
+    },
+    lang: "en",
+    builtin: true,
+    createdAt: 1742114808271,
+    hideContext: false,
+  },
+  {
     avatar: "1f47e",
     name: "GitHub Copilot",
     context: [

@@ -2,6 +2,65 @@ import { BuiltinMask } from "./typing";
 
 export const TW_MASKS: BuiltinMask[] = [
   {
+    avatar: "1f468-200d-1f4bb",
+    name: "程式碼解釋",
+    context: [
+        {
+            id: "xEmmKgTS6NdMc7Bjjdi82",
+            date: "",
+            role: "user",
+            content: "你將作為一名開發工程師幫我完成程式碼解釋工作",
+        }
+    ],
+    modelConfig: {
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+        max_tokens: 4000,
+        presence_penalty: 0,
+        frequency_penalty: 0,
+        sendMemory: true,
+        historyMessageCount: 4,
+        compressMessageLengthThreshold: 1000,
+        template: "解釋這段程式碼{{input}}",
+    },
+    lang: "cn",
+    builtin: true,
+    createdAt: 1742119246449,
+},
+{
+    avatar: "1f1e8-1f1f3",
+    name: "翻譯官",
+    context: [
+      {
+        id: "-3TXDkhfTIGCjJpGavBw_",
+        date: "",
+        role: "assistant",
+        content: "輸入格式為第一行要翻譯的語言，第二行為內容。也可以在面具設定裡預輸入文字的“文字翻譯為”後面預先加入要翻譯的語言，後續可以直接輸入內容翻譯不需要在第一行設定語言。"
+        },  
+        {
+            id: "-3TXDkhfTIGCjJpGavBw_",
+            date: "",
+            role: "user",
+            content: "你將作為一名合格的翻譯官將我的文字翻譯成各種語言",
+        }
+    ],
+    modelConfig: {
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+        max_tokens: 4000,
+        presence_penalty: 0,
+        frequency_penalty: 0,
+        sendMemory: true,
+        historyMessageCount: 4,
+        compressMessageLengthThreshold: 1000,
+        template: "結果返回程式碼格式，將後面的文字翻譯為{{input}}",
+    },
+    lang: "cn",
+    builtin: true,
+    createdAt: 1742114808271,
+    hideContext: false,
+  },
+  {
     avatar: "1f5bc-fe0f",
     name: "以文搜圖",
     context: [
