@@ -30,8 +30,8 @@ export function fetch(url: string, options?: RequestInit): Promise<Response> {
       headers: _headers = {},
       body = [],
     } = options || {};
-    let unlisten: Function | undefined;
-    let setRequestId: Function | undefined;
+    let unlisten: (() => void) | undefined;
+    let setRequestId: ((value: number) => void) | undefined;
     const requestIdPromise = new Promise((resolve) => (setRequestId = resolve));
     const ts = new TransformStream();
     const writer = ts.writable.getWriter();
@@ -66,7 +66,7 @@ export function fetch(url: string, options?: RequestInit): Promise<Response> {
           close();
         }
       }),
-    ).then((u: Function) => (unlisten = u));
+    ).then((u: () => void) => (unlisten = u));
 
     const headers: Record<string, string> = {
       Accept: "application/json, text/plain, */*",
