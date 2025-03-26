@@ -578,6 +578,7 @@ const bytedanceModels = [
   "Doubao-pro-128k",
   "deepseek-r1-250120",
   "deepseek-v3-241226",
+  "deepseek-v3-250324",
   "deepseek-r1-distill-qwen-7b-250120",
   "deepseek-r1-distill-qwen-32b-250120",
 ];
