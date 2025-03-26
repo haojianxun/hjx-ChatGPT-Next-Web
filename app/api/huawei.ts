@@ -47,24 +47,13 @@ async function request(req: NextRequest) {
   // 先用原始 modelName 获取 charUrl
   let baseUrl: string;
   let endpoint = "";
-  if (modelName === "DeepSeek-R1-671B-32K") {
-    endpoint = "952e4f88-ef93-4398-ae8d-af37f63f0d8e";
+  if (modelName === "DeepSeek-V3") {
+    endpoint = "271c9332-4aa6-4ff5-95b3-0cf8bd94c394";
   }
-  if (modelName === "DeepSeek-V3-671B-32K") {
-    endpoint = "fd53915b-8935-48fe-be70-449d76c0fc87";
+  if (modelName === "DeepSeek-R1") {
+    endpoint = "8a062fd4-7367-4ab4-a936-5eeb8fb821c4";
   }
-  if (modelName === "DeepSeek-R1-671B-8K") {
-    endpoint = "861b6827-e5ef-4fa6-90d2-5fd1b2975882";
-  }
-  if (modelName === "DeepSeek-V3-671B-8K") {
-    endpoint = "707c01c8-517c-46ca-827a-d0b21c71b074";
-  }
-  if (modelName === "DeepSeek-V3-671B-4K") {
-    endpoint = "f354eacc-a2c5-43b4-a785-e5aadca988b3";
-  }
-  if (modelName === "DeepSeek-R1-671B-4K") {
-    endpoint = "c3cfa9e2-40c9-485f-a747-caae405296ef";
-  }
+
 
   let charUrl = HUAWEI_BASE_URL.concat("/")
     .concat(endpoint)

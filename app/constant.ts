@@ -37,7 +37,7 @@ export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
 export const HUAWEI_BASE_URL =
-  "https://infer-modelarts-cn-southwest-2.modelarts-infer.com/v1/infers";
+  "https://maas-cn-southwest-2.modelarts-maas.com/v1/infers";
 
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
@@ -666,19 +666,8 @@ const siliconflowModels = [
 ];
 
 const huaweiModels = [
-  //https://infer-modelarts-cn-southwest-2.modelarts-infer.com/v1/infers/952e4f88-ef93-4398-ae8d-af37f63f0d8e/v1/chat/completions
-  "DeepSeek-R1-671B-32K",
-  //https://infer-modelarts-cn-southwest-2.modelarts-infer.com/v1/infers/fd53915b-8935-48fe-be70-449d76c0fc87/v1/chat/completions
-  "DeepSeek-V3-671B-32K",
-  //以下为8k 上面为32k
-  //https://infer-modelarts-cn-southwest-2.modelarts-infer.com/v1/infers/861b6827-e5ef-4fa6-90d2-5fd1b2975882/v1/chat/completions
-  "DeepSeek-R1-671B-8K",
-  //https://infer-modelarts-cn-southwest-2.modelarts-infer.com/v1/infers/707c01c8-517c-46ca-827a-d0b21c71b074/v1/chat/completions
-  "DeepSeek-V3-671B-8K",
-  //https://infer-modelarts-cn-southwest-2.modelarts-infer.com/v1/infers/f354eacc-a2c5-43b4-a785-e5aadca988b3/v1/chat/completions
-  "DeepSeek-V3-671B-4K",
-  //https://infer-modelarts-cn-southwest-2.modelarts-infer.com/v1/infers/c3cfa9e2-40c9-485f-a747-caae405296ef/v1/chat/completions
-  "DeepSeek-R1-671B-4K",
+  "DeepSeek-R1",
+  "DeepSeek-V3",
 ];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
