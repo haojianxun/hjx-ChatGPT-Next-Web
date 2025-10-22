@@ -38,6 +38,9 @@ export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
 export const AI302_BASE_URL = "https://api.302.ai";
 
+export const HUAWEI_BASE_URL =
+  "https://maas-cn-southwest-2.modelarts-maas.com/v1/infers";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -74,6 +77,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  Huawei = "/api/huawei",
   "302.AI" = "/api/302ai",
 }
 
@@ -133,6 +137,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Huawei = "Huawei",
   "302.AI" = "302.AI",
 }
 
@@ -160,6 +165,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Huawei = "Huawei",
   "302.AI" = "302.AI",
 }
 
@@ -217,6 +223,11 @@ export const Baidu = {
     }
     return `rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
   },
+};
+
+export const Huawei = {
+  ExampleEndpoint: HUAWEI_BASE_URL,
+  ChatPath: "/v1/chat/completions",
 };
 
 export const ByteDance = {
@@ -604,6 +615,11 @@ const bytedanceModels = [
   "Doubao-pro-4k",
   "Doubao-pro-32k",
   "Doubao-pro-128k",
+  // "deepseek-r1-250120",
+  "deepseek-v3-241226",
+  "deepseek-v3-250324",
+  "deepseek-r1-distill-qwen-7b-250120",
+  "deepseek-r1-distill-qwen-32b-250120",
 ];
 
 const alibabaModes = [
@@ -741,6 +757,8 @@ const ai302Models = [
   "claude-opus-4-20250514",
   "gemini-2.5-pro",
 ];
+
+const huaweiModels = ["DeepSeek-R1", "DeepSeek-V3"];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
@@ -896,6 +914,17 @@ export const DEFAULT_MODELS = [
       providerName: "SiliconFlow",
       providerType: "siliconflow",
       sorted: 14,
+    },
+  })),
+  ...huaweiModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "huawei",
+      providerName: "Huawei",
+      providerType: "Huawei",
+      sorted: 15,
     },
   })),
   ...ai302Models.map((name) => ({
