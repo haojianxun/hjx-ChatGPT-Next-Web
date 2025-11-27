@@ -1,5 +1,11 @@
 "use client";
-import { ApiPath, Alibaba, ALIBABA_BASE_URL } from "@/app/constant";
+
+import {
+  ApiPath,
+  AI302_BASE_URL,
+  DEFAULT_MODELS,
+  AI302,
+} from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -7,29 +13,25 @@ import {
   ChatMessageTool,
   usePluginStore,
 } from "@/app/store";
-import {
-  preProcessImageContentForAlibabaDashScope,
-  streamWithThink,
-} from "@/app/utils/chat";
+import { preProcessImageContent, streamWithThink } from "@/app/utils/chat";
 import {
   ChatOptions,
   getHeaders,
   LLMApi,
   LLMModel,
   SpeechOptions,
-  MultimodalContent,
-  MultimodalContentForAlibaba,
 } from "../api";
 import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
   getMessageTextContentWithoutThinking,
-  getTimeoutMSByModel,
   isVisionModel,
+  getTimeoutMSByModel,
 } from "@/app/utils";
-import { fetch } from "@/app/utils/stream";
+import { RequestPayload } from "./openai";
 
-export interface OpenAIListModelResponse {
+import { fetch } from "@/app/utils/stream";
+export interface Ai302ListModelResponse {
   object: string;
   data: Array<{
     id: string;
@@ -38,45 +40,31 @@ export interface OpenAIListModelResponse {
   }>;
 }
 
-interface RequestInput {
-  messages: {
-    role: "system" | "user" | "assistant";
-    content: string | MultimodalContent[];
-  }[];
-}
-interface RequestParam {
-  result_format: string;
-  incremental_output?: boolean;
-  temperature: number;
-  repetition_penalty?: number;
-  top_p: number;
-  max_tokens?: number;
-}
-interface RequestPayload {
-  model: string;
-  input: RequestInput;
-  parameters: RequestParam;
-}
+export class Ai302Api implements LLMApi {
+  private disableListModels = false;
 
-export class QwenApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.alibabaUrl;
+      baseUrl = accessStore.ai302Url;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp ? ALIBABA_BASE_URL : ApiPath.Alibaba;
+      const apiPath = ApiPath["302.AI"];
+      baseUrl = isApp ? AI302_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Alibaba)) {
+    if (
+      !baseUrl.startsWith("http") &&
+      !baseUrl.startsWith(ApiPath["302.AI"])
+    ) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -86,7 +74,7 @@ export class QwenApi implements LLMApi {
   }
 
   extractMessage(res: any) {
-    return res?.output?.choices?.at(0)?.message?.content ?? "";
+    return res.choices?.at(0)?.message?.content ?? "";
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
@@ -94,62 +82,59 @@ export class QwenApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
+    const visionModel = isVisionModel(options.config.model);
+    const messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      if (v.role === "assistant") {
+        const content = getMessageTextContentWithoutThinking(v);
+        messages.push({ role: v.role, content });
+      } else {
+        const content = visionModel
+          ? await preProcessImageContent(v.content)
+          : getMessageTextContent(v);
+        messages.push({ role: v.role, content });
+      }
+    }
+
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
       ...{
         model: options.config.model,
+        providerName: options.config.providerName,
       },
     };
 
-    const visionModel = isVisionModel(options.config.model);
+    const requestPayload: RequestPayload = {
+      messages,
+      stream: options.config.stream,
+      model: modelConfig.model,
+      temperature: modelConfig.temperature,
+      presence_penalty: modelConfig.presence_penalty,
+      frequency_penalty: modelConfig.frequency_penalty,
+      top_p: modelConfig.top_p,
+      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
+      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
+    };
 
-    const messages: ChatOptions["messages"] = [];
-    for (const v of options.messages) {
-      const content = (
-        visionModel
-          ? await preProcessImageContentForAlibabaDashScope(v.content)
-          : v.role === "assistant"
-          ? getMessageTextContentWithoutThinking(v)
-          : getMessageTextContent(v)
-      ) as any;
-
-      messages.push({ role: v.role, content });
-    }
+    console.log("[Request] openai payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
-    const requestPayload: RequestPayload = {
-      model: modelConfig.model,
-      input: {
-        messages,
-      },
-      parameters: {
-        result_format: "message",
-        incremental_output: shouldStream,
-        temperature: modelConfig.temperature,
-        // max_tokens: modelConfig.max_tokens,
-        top_p: modelConfig.top_p === 1 ? 0.99 : modelConfig.top_p, // qwen top_p is should be < 1
-      },
-    };
-
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const headers = {
-        ...getHeaders(),
-        "X-DashScope-SSE": shouldStream ? "enable" : "disable",
-      };
-
-      const chatPath = this.path(Alibaba.ChatPath(modelConfig.model));
+      const chatPath = this.path(AI302.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: headers,
+        headers: getHeaders(),
       };
 
-      // make a fetch request
+      // console.log(chatPayload);
+
+      // Use extended timeout for thinking models as they typically require more processing time
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
         getTimeoutMSByModel(options.config.model),
@@ -164,7 +149,7 @@ export class QwenApi implements LLMApi {
         return streamWithThink(
           chatPath,
           requestPayload,
-          headers,
+          getHeaders(),
           tools as any,
           funcs,
           controller,
@@ -172,17 +157,14 @@ export class QwenApi implements LLMApi {
           (text: string, runTools: ChatMessageTool[]) => {
             // console.log("parseSSE", text, runTools);
             const json = JSON.parse(text);
-            const choices = json.output.choices as Array<{
-              message: {
-                content: string | null | MultimodalContentForAlibaba[];
+            const choices = json.choices as Array<{
+              delta: {
+                content: string | null;
                 tool_calls: ChatMessageTool[];
                 reasoning_content: string | null;
               };
             }>;
-
-            if (!choices?.length) return { isThinking: false, content: "" };
-
-            const tool_calls = choices[0]?.message?.tool_calls;
+            const tool_calls = choices[0]?.delta?.tool_calls;
             if (tool_calls?.length > 0) {
               const index = tool_calls[0]?.index;
               const id = tool_calls[0]?.id;
@@ -201,9 +183,8 @@ export class QwenApi implements LLMApi {
                 runTools[index]["function"]["arguments"] += args;
               }
             }
-
-            const reasoning = choices[0]?.message?.reasoning_content;
-            const content = choices[0]?.message?.content;
+            const reasoning = choices[0]?.delta?.reasoning_content;
+            const content = choices[0]?.delta?.content;
 
             // Skip if both content and reasoning_content are empty or null
             if (
@@ -224,9 +205,7 @@ export class QwenApi implements LLMApi {
             } else if (content && content.length > 0) {
               return {
                 isThinking: false,
-                content: Array.isArray(content)
-                  ? content.map((item) => item.text).join(",")
-                  : content,
+                content: content,
               };
             }
 
@@ -241,8 +220,10 @@ export class QwenApi implements LLMApi {
             toolCallMessage: any,
             toolCallResult: any[],
           ) => {
-            requestPayload?.input?.messages?.splice(
-              requestPayload?.input?.messages?.length,
+            // @ts-ignore
+            requestPayload?.messages?.splice(
+              // @ts-ignore
+              requestPayload?.messages?.length,
               0,
               toolCallMessage,
               ...toolCallResult,
@@ -271,7 +252,36 @@ export class QwenApi implements LLMApi {
   }
 
   async models(): Promise<LLMModel[]> {
-    return [];
+    if (this.disableListModels) {
+      return DEFAULT_MODELS.slice();
+    }
+
+    const res = await fetch(this.path(AI302.ListModelPath), {
+      method: "GET",
+      headers: {
+        ...getHeaders(),
+      },
+    });
+
+    const resJson = (await res.json()) as Ai302ListModelResponse;
+    const chatModels = resJson.data;
+    console.log("[Models]", chatModels);
+
+    if (!chatModels) {
+      return [];
+    }
+
+    let seq = 1000; //同 Constant.ts 中的排序保持一致
+    return chatModels.map((m) => ({
+      name: m.id,
+      available: true,
+      sorted: seq++,
+      provider: {
+        id: "ai302",
+        providerName: "302.AI",
+        providerType: "ai302",
+        sorted: 15,
+      },
+    }));
   }
 }
-export { Alibaba };
